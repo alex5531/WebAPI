@@ -1,0 +1,64 @@
+﻿@model IEnumerable<MVCApp.Models.PostViewModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+@using Microsoft.AspNetCore.Http;
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<p>
+    @{
+        //Context.Request.Cookies.TryGetValue("JWT", out string jwt);
+        if (!string.IsNullOrEmpty(Context.Session.GetString(Startup.JWT_COOKIE_NAME)))
+        {
+            <a asp-action="AddPost">Create New Post</a>
+        }
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Author
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName) &nbsp;@Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Body)
+                </td>
+                <td>
+                    
+                    @{ 
+                        //Context.Request.Cookies.TryGetValue("JWT", out jwt);
+                        if (!string.IsNullOrEmpty(Context.Session.GetString(Startup.JWT_COOKIE_NAME)))
+                        {
+                            @Html.ActionLink("Edit", "EditPost", new { id = item.Id });
+                            @:|
+                            @Html.ActionLink("Delete", "DeletePost", new { id = item.Id });
+                        }
+                    }
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

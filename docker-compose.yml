@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  mvcapp:
+    image: ${DOCKER_REGISTRY-}mvcapp
+    build:
+      context: .
+      dockerfile: MVCApp\Dockerfile
+    depends_on:
+      - webapi
+
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: WebAPI\Dockerfile
+    depends_on:
+      - recreate-db
+  
+  recreate-db:
+    image: microsoft/mssql-server-windows-developer
+    container_name: MSSQLServer
+    build:
+      context: .
+      dockerfile: MSSQL/Dockerfile
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Sample123
+    ports:
+      - "5433:1433"
