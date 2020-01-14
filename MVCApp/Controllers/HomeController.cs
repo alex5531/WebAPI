@@ -15,6 +15,7 @@ namespace MVCApp.Controllers
         private readonly IPostRepository _postRepo;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private (IMapper mapper, IPostRepository postRepo, IUserService userService) p;
 
         public HomeController(IMapper mapper, IPostRepository postRepo, IUserService userService)
         {
@@ -99,7 +100,7 @@ namespace MVCApp.Controllers
         {
             //var token = Request.Cookies[Startup.JWT_COOKIE_NAME];
             //HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues token);
-            var token = HttpContext.Session.GetString(Startup.JWT_COOKIE_NAME);
+            var token = GetJWTCookie();
             var result = await _postRepo.DeletePost(id, token);
             if(result.StatusCode != HttpStatusCode.OK)
             {
@@ -123,7 +124,7 @@ namespace MVCApp.Controllers
 
             //var token = Request.Cookies[Startup.JWT_COOKIE_NAME];
             //HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues token);
-            var token = HttpContext.Session.GetString(Startup.JWT_COOKIE_NAME);
+            var token = GetJWTCookie();
             var result = await _postRepo.AddPost(_mapper.Map<Post>(postView), token);
             if (result.StatusCode != HttpStatusCode.Created)
             {
@@ -148,13 +149,18 @@ namespace MVCApp.Controllers
 
             //var token = HttpContext.Request.Cookies[JWT_COOKIE_NAME];
             //HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues token);
-            var token = HttpContext.Session.GetString(Startup.JWT_COOKIE_NAME);
+            var token = GetJWTCookie();
             var result = await _postRepo.EditPost(post, token);
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 return View(post);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        protected virtual string GetJWTCookie()
+        {
+            return HttpContext.Session.GetString(Startup.JWT_COOKIE_NAME);
         }
     }
 }
