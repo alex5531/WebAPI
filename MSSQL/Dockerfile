@@ -5,10 +5,6 @@
 
 FROM microsoft/mssql-server-windows-developer
 
-SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
-
-EXPOSE 1433
-
 WORKDIR C:\\SQLServer
 
 COPY .\\MSSQL\\CreateDB.sql .
@@ -18,10 +14,11 @@ ENV ACCEPT_EULA Y
    
 ENV sa_password Sample123
 
-#CMD sqlcmd U sa -P Sample123 -i create-db.sql && .\start -sa_password $env:sa_password \ -ACCEPT_EULA $env:ACCEPT_EULA -Verbose
-#CMD sqlcmd.exe -U sa -P Sample123 -i C:\\SQLServer\\createDB.sql
-#ENTRYPOINT powershell "sqlcmd -U sa -P Sample123 -i 'C:\\SQLServer\\createdb.sql';"
+RUN sqlcmd -i CreateDB.sql
+RUN sqlcmd -d MSSQL -i Posts.sql
+RUN sqlcmd -d MSSQL -i Users.sql
 
-#CMD .\Start.ps1
+#CMD sqlcmd U sa -P Sample123 -i create-db.sql && .\start -sa_password $env:sa_password \ -ACCEPT_EULA $env:ACCEPT_EULA -Verbose
+#ENTRYPOINT powershell "sqlcmd -U sa -P Sample123 -i 'C:\\SQLServer\\createdb.sql';"
 
 WORKDIR /
