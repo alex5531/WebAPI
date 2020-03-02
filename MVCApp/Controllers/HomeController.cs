@@ -15,7 +15,6 @@ namespace MVCApp.Controllers
         private readonly IPostRepository _postRepo;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private (IMapper mapper, IPostRepository postRepo, IUserService userService) p;
 
         public HomeController(IMapper mapper, IPostRepository postRepo, IUserService userService)
         {
